@@ -105,27 +105,27 @@
             <datalist id="mechSupportFilter"></datalist>
         </div>
         <div class="mb-4">
-            <p class="text-sm text-gray-600 inline-block">* This is for testing purposes only, please do not touch.</p>
-            <input type="file" id="csvFile" accept=".csv" class="p-2 border rounded inline-block">
+        <p class="text-sm text-gray-600 inline-block">* This is for testing purposes only, please do not touch.</p>
+<input type="file" id="csvFile" accept=".csv" class="p-2 border rounded inline-block">
         </div>
     </div>
-    <div class="overflow-x-auto">
-        <table id="cardTable" class="min-w-full bg-white border border-gray-200">
-            <thead>
-                <tr>
-                    <th class="py-2 px-4 border-b">Name</th>
-                    <th class="py-2 px-4 border-b">Status</th>
-                    <th class="py-2 px-4 border-b">Effect</th>
-                    <th class="py-2 px-4 border-b">Type</th>
-                    <th class="py-2 px-4 border-b">Slice</th>
-                    <th class="py-2 px-4 border-b">Attribute Support</th>
-                    <th class="py-2 px-4 border-b">Type Support</th>
-                    <th class="py-2 px-4 border-b">Mechanic Support</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
+        <div class="overflow-x-auto">
+            <table id="cardTable" class="min-w-full bg-white border border-gray-200">
+                <thead>
+                    <tr>
+                        <th class="py-2 px-4 border-b">Name</th>
+                        <th class="py-2 px-4 border-b">Status</th>
+                        <th class="py-2 px-4 border-b">Effect</th>
+                        <th class="py-2 px-4 border-b">Type</th>
+                        <th class="py-2 px-4 border-b">Slice</th>
+                        <th class="py-2 px-4 border-b">Attribute Support</th>
+                        <th class="py-2 px-4 border-b">Type Support</th>
+                        <th class="py-2 px-4 border-b">Mechanic Support</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
 
     <!-- The Modal -->
@@ -173,14 +173,38 @@
         function populateFilters() {
             const filters = ['sliceFilter', 'attSupportFilter', 'typeSupportFilter', 'mechSupportFilter', 'typeFilter'];
             filters.forEach(filterId => {
-                const filter = document.getElementById(filterId);
-                filter.innerHTML = '';
-                const uniqueValues = [...new Set(cardData.flatMap(card => (card[filterId.replace('Filter', '').toUpperCase()] || 'N/A').split(',').map(value => value.trim())))];
-                uniqueValues.forEach(value => {
-                    const option = document.createElement('option');
-                    option.value = value;
-                    filter.appendChild(option);
+            const filter = document.getElementById(filterId);
+            filter.innerHTML = '';
+            const uniqueValues = [...new Set(cardData.flatMap(card => (card[filterId.replace('Filter', '').toUpperCase()] || 'N/A').split(',').map(value => value.trim())))];
+            uniqueValues.forEach(value => {
+                const option = document.createElement('option');
+                option.value = value;
+                filter.appendChild(option);
+            });
+            if (filterId === 'attSupportFilter') {
+                ['Light', 'Dark', 'Water', 'Fire', 'Earth', 'Wind', 'Divine'].forEach(value => {
+                const option = document.createElement('option');
+                option.value = value;
+                filter.appendChild(option);
                 });
+            }
+            if (filterId === 'typeSupportFilter') {
+                ['B.W.', 'Zombie', 'Fiend', 'Dinosaur', 'Illusion', 'Insect', 'W.B.', 'Sea Serpent', 'Machine', 'Aqua', 'Pyro', 'Thunder', 'Spellcaster', 'Plant', 'Rock', 'Reptile', 'Fairy', 'Fish', 'Divine-Beast', 'Psychic', 'Wyrm', 'Cyberse', 'Dragon', 'Beast', 'Warrior'].forEach(value => {
+                const option = document.createElement('option');
+                option.value = value;
+                filter.appendChild(option);
+                });
+            }
+            if (filterId === 'mechSupportFilter') {
+                ['Ritual', 'Fusion', 'Synchro', 'Xyz', 'Pendulum', 'Link', 'Gemini'].forEach(value => {
+                const option = document.createElement('option');
+                option.value = value;
+                filter.appendChild(option);
+                });
+            }
+            if (filterId === 'attSupportFilter' || filterId === 'typeSupportFilter' || filterId === 'mechSupportFilter') {
+                console.log(`Values for ${filterId}:`, uniqueValues);
+            }
             });
         }
 
