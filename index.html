@@ -129,7 +129,7 @@
     <div class="container mx-auto p-4">
         <div class="flex justify-end mb-4">
             <label for="darkModeToggle" class="mr-2">Dark Mode</label>
-            <input type="checkbox" id="darkModeToggle">
+            <input type="checkbox" id="darkModeToggle" checked>
         </div>
         <h1 class="text-3xl font-bold mb-4 text-center">Card List</h1>
         <p class="text-center text-sm text-gray-600">* Click/Tap on a card to view its image</p>
@@ -151,27 +151,27 @@
             <datalist id="mechSupportFilter"></datalist>
         </div>
         <div class="mb-4">
-        <p class="text-sm text-gray-600 inline-block">* This is for testing purposes only, please do not touch.</p>
-<input type="file" id="csvFile" accept=".csv" class="p-2 border rounded inline-block">
+            <p class="text-sm text-gray-600 inline-block">* This is for testing purposes only, please do not touch.</p>
+            <input type="file" id="csvFile" accept=".csv" class="p-2 border rounded inline-block">
         </div>
     </div>
-        <div class="overflow-x-auto">
-            <table id="cardTable" class="min-w-full bg-white border border-gray-200">
-                <thead>
-                    <tr>
-                        <th class="py-2 px-4 border-b">Name</th>
-                        <th class="py-2 px-4 border-b">Status</th>
-                        <th class="py-2 px-4 border-b">Effect</th>
-                        <th class="py-2 px-4 border-b">Type</th>
-                        <th class="py-2 px-4 border-b">Slice</th>
-                        <th class="py-2 px-4 border-b">Attribute Support</th>
-                        <th class="py-2 px-4 border-b">Type Support</th>
-                        <th class="py-2 px-4 border-b">Mechanic Support</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+    <div class="overflow-x-auto">
+        <table id="cardTable" class="min-w-full bg-white border border-gray-200">
+            <thead>
+                <tr>
+                    <th class="py-2 px-4 border-b">Name</th>
+                    <th class="py-2 px-4 border-b">Status</th>
+                    <th class="py-2 px-4 border-b">Effect</th>
+                    <th class="py-2 px-4 border-b">Type</th>
+                    <th class="py-2 px-4 border-b">Slice</th>
+                    <th class="py-2 px-4 border-b">Attribute Support</th>
+                    <th class="py-2 px-4 border-b">Type Support</th>
+                    <th class="py-2 px-4 border-b">Mechanic Support</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
     </div>
 
     <!-- The Modal -->
@@ -200,6 +200,11 @@
                     });
                 });
 
+            document.body.classList.toggle('dark-mode');
+            document.querySelectorAll('table, th, td, tr, .modal-content, .close, .filters input').forEach(element => {
+                element.classList.toggle('dark-mode');
+            });
+
             const darkModeToggle = document.getElementById('darkModeToggle');
             darkModeToggle.addEventListener('change', function () {
                 document.body.classList.toggle('dark-mode');
@@ -227,38 +232,38 @@
         function populateFilters() {
             const filters = ['sliceFilter', 'attSupportFilter', 'typeSupportFilter', 'mechSupportFilter', 'typeFilter'];
             filters.forEach(filterId => {
-            const filter = document.getElementById(filterId);
-            filter.innerHTML = '';
-            const uniqueValues = [...new Set(cardData.flatMap(card => (card[filterId.replace('Filter', '').toUpperCase()] || 'N/A').split(',').map(value => value.trim())))];
-            uniqueValues.forEach(value => {
-                const option = document.createElement('option');
-                option.value = value;
-                filter.appendChild(option);
-            });
-            if (filterId === 'attSupportFilter') {
-                ['Light', 'Dark', 'Water', 'Fire', 'Earth', 'Wind', 'Divine'].forEach(value => {
-                const option = document.createElement('option');
-                option.value = value;
-                filter.appendChild(option);
+                const filter = document.getElementById(filterId);
+                filter.innerHTML = '';
+                const uniqueValues = [...new Set(cardData.flatMap(card => (card[filterId.replace('Filter', '').toUpperCase()] || 'N/A').split(',').map(value => value.trim())))];
+                uniqueValues.forEach(value => {
+                    const option = document.createElement('option');
+                    option.value = value;
+                    filter.appendChild(option);
                 });
-            }
-            if (filterId === 'typeSupportFilter') {
-                ['B.W.', 'Zombie', 'Fiend', 'Dinosaur', 'Illusion', 'Insect', 'W.B.', 'Sea Serpent', 'Machine', 'Aqua', 'Pyro', 'Thunder', 'Spellcaster', 'Plant', 'Rock', 'Reptile', 'Fairy', 'Fish', 'Divine-Beast', 'Psychic', 'Wyrm', 'Cyberse', 'Dragon', 'Beast', 'Warrior'].forEach(value => {
-                const option = document.createElement('option');
-                option.value = value;
-                filter.appendChild(option);
-                });
-            }
-            if (filterId === 'mechSupportFilter') {
-                ['Ritual', 'Fusion', 'Synchro', 'Xyz', 'Pendulum', 'Link', 'Gemini'].forEach(value => {
-                const option = document.createElement('option');
-                option.value = value;
-                filter.appendChild(option);
-                });
-            }
-            if (filterId === 'attSupportFilter' || filterId === 'typeSupportFilter' || filterId === 'mechSupportFilter') {
-                console.log(`Values for ${filterId}:`, uniqueValues);
-            }
+                if (filterId === 'attSupportFilter') {
+                    ['Light', 'Dark', 'Water', 'Fire', 'Earth', 'Wind', 'Divine'].forEach(value => {
+                        const option = document.createElement('option');
+                        option.value = value;
+                        filter.appendChild(option);
+                    });
+                }
+                if (filterId === 'typeSupportFilter') {
+                    ['B.W.', 'Zombie', 'Fiend', 'Dinosaur', 'Illusion', 'Insect', 'W.B.', 'Sea Serpent', 'Machine', 'Aqua', 'Pyro', 'Thunder', 'Spellcaster', 'Plant', 'Rock', 'Reptile', 'Fairy', 'Fish', 'Divine-Beast', 'Psychic', 'Wyrm', 'Cyberse', 'Dragon', 'Beast', 'Warrior'].forEach(value => {
+                        const option = document.createElement('option');
+                        option.value = value;
+                        filter.appendChild(option);
+                    });
+                }
+                if (filterId === 'mechSupportFilter') {
+                    ['Ritual', 'Fusion', 'Synchro', 'Xyz', 'Pendulum', 'Link', 'Gemini'].forEach(value => {
+                        const option = document.createElement('option');
+                        option.value = value;
+                        filter.appendChild(option);
+                    });
+                }
+                if (filterId === 'attSupportFilter' || filterId === 'typeSupportFilter' || filterId === 'mechSupportFilter') {
+                    console.log(`Values for ${filterId}:`, uniqueValues);
+                }
             });
         }
 
