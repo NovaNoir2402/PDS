@@ -94,32 +94,38 @@
             <datalist id="typeFilter"></datalist>
             <input list="sliceFilter" id="sliceFilterInput" placeholder="Search by Slice" class="p-2 border rounded">
             <datalist id="sliceFilter"></datalist>
-            <input list="attSupportFilter" id="attSupportFilterInput" placeholder="Search by Attribute Support" class="p-2 border rounded">
+            <input list="attSupportFilter" id="attSupportFilterInput" placeholder="Search by Attribute Support"
+                class="p-2 border rounded">
             <datalist id="attSupportFilter"></datalist>
-            <input list="typeSupportFilter" id="typeSupportFilterInput" placeholder="Search by Type Support" class="p-2 border rounded">
+            <input list="typeSupportFilter" id="typeSupportFilterInput" placeholder="Search by Type Support"
+                class="p-2 border rounded">
             <datalist id="typeSupportFilter"></datalist>
-            <input list="mechSupportFilter" id="mechSupportFilterInput" placeholder="Search by Mechanic Support" class="p-2 border rounded">
+            <input list="mechSupportFilter" id="mechSupportFilterInput" placeholder="Search by Mechanic Support"
+                class="p-2 border rounded">
             <datalist id="mechSupportFilter"></datalist>
         </div>
-        <input type="file" id="csvFile" accept=".csv" class="mb-4 p-2 border rounded">
-        <p class="text-sm text-gray-600">* This is for testing purposes only, please do not touch.</p>
-        <div class="overflow-x-auto">
-            <table id="cardTable" class="min-w-full bg-white border border-gray-200">
-                <thead>
-                    <tr>
-                        <th class="py-2 px-4 border-b">Name</th>
-                        <th class="py-2 px-4 border-b">Status</th>
-                        <th class="py-2 px-4 border-b">Effect</th>
-                        <th class="py-2 px-4 border-b">Type</th>
-                        <th class="py-2 px-4 border-b">Slice</th>
-                        <th class="py-2 px-4 border-b">Attribute Support</th>
-                        <th class="py-2 px-4 border-b">Type Support</th>
-                        <th class="py-2 px-4 border-b">Mechanic Support</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+        <div class="mb-4">
+            <p class="text-sm text-gray-600 inline-block">* This is for testing purposes only, please do not touch.</p>
+            <input type="file" id="csvFile" accept=".csv" class="p-2 border rounded inline-block">
         </div>
+    </div>
+    <div class="overflow-x-auto">
+        <table id="cardTable" class="min-w-full bg-white border border-gray-200">
+            <thead>
+                <tr>
+                    <th class="py-2 px-4 border-b">Name</th>
+                    <th class="py-2 px-4 border-b">Status</th>
+                    <th class="py-2 px-4 border-b">Effect</th>
+                    <th class="py-2 px-4 border-b">Type</th>
+                    <th class="py-2 px-4 border-b">Slice</th>
+                    <th class="py-2 px-4 border-b">Attribute Support</th>
+                    <th class="py-2 px-4 border-b">Type Support</th>
+                    <th class="py-2 px-4 border-b">Mechanic Support</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
     </div>
 
     <!-- The Modal -->
