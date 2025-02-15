@@ -86,6 +86,7 @@
 <body class="bg-gray-100 text-gray-900">
     <div class="container mx-auto p-4">
         <h1 class="text-3xl font-bold mb-4 text-center">Card List</h1>
+        <p class="text-center text-sm text-gray-600">* Click/Tap on a card to view its image</p>
         <div class="filters grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
             <input type="text" id="nameSearch" placeholder="Search by Name" class="p-2 border rounded">
             <input type="text" id="effectSearch" placeholder="Search by Effect" class="p-2 border rounded">
@@ -101,6 +102,7 @@
             <datalist id="mechSupportFilter"></datalist>
         </div>
         <input type="file" id="csvFile" accept=".csv" class="mb-4 p-2 border rounded">
+        <p class="text-sm text-gray-600">* This is for testing purposes only, please do not touch.</p>
         <div class="overflow-x-auto">
             <table id="cardTable" class="min-w-full bg-white border border-gray-200">
                 <thead>
@@ -198,10 +200,11 @@
                     (mechSupportFilter === '' || row.MECH_SUPPORT && row.MECH_SUPPORT.toLowerCase().includes(mechSupportFilter)) &&
                     (typeFilter === '' || row.TYPE && row.TYPE.toLowerCase().includes(typeFilter))
                 ) {
+                    const statusClass = getStatusClass(row.STATUS);
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td class="py-2 px-4 border-b">${row.NAME}</td>
-                        <td class="py-2 px-4 border-b">${row.STATUS || 'N/A'}</td>
+                        <td class="py-2 px-4 border-b ${statusClass}">${row.STATUS || 'N/A'}</td>
                         <td class="py-2 px-4 border-b">${row.EFFECT || 'N/A'}</td>
                         <td class="py-2 px-4 border-b">${row.TYPE || 'N/A'}</td>
                         <td class="py-2 px-4 border-b">${row.SLICE || 'N/A'}</td>
@@ -216,6 +219,21 @@
                     tableBody.appendChild(tr);
                 }
             });
+        }
+
+        function getStatusClass(status) {
+            switch (status) {
+                case 'UNLIM':
+                    return 'bg-green-200 text-green-800';
+                case 'NA':
+                    return 'bg-gray-200 text-gray-800';
+                case 'LIM':
+                    return 'bg-yellow-200 text-yellow-800';
+                case 'BAN':
+                    return 'bg-red-200 text-red-800';
+                default:
+                    return '';
+            }
         }
 
         function showCardImage(cardName) {
