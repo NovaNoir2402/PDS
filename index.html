@@ -223,6 +223,7 @@
         let cardData = [];
         let currentPage = 1;
         let cardsPerPage = 25;
+        const imageCache = {};
 
         document.addEventListener('DOMContentLoaded', function () {
             fetch('cards.csv')
@@ -409,47 +410,44 @@
             const endIndex = startIndex + cardsPerPage;
             const paginatedData = filteredData.slice(startIndex, endIndex);
 
-            paginatedData.forEach(row => {
-                const statusClass = getStatusClass(row.STATUS);
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="py-2 px-4 border-b"><img src="" alt="Card Image" class="card-image" data-name="${row.NAME}" style="width: 50px; height: auto;"></td>
-                    <td class="py-2 px-4 border-b">${row.NAME}</td>
-                    <td class="py-2 px-4 border-b ${statusClass}">${row.STATUS || 'N/A'}</td>
-                    <td class="py-2 px-4 border-b">${row.EFFECT || 'N/A'}</td>
-                    <td class="py-2 px-4 border-b">${row.TYPE || 'N/A'}</td>
-                    <td class="py-2 px-4 border-b">${row.SLICE || 'N/A'}</td>
-                    <td class="py-2 px-4 border-b">${row.ATT_SUPPORT || 'N/A'}</td>
-                    <td class="py-2 px-4 border-b">${row.TYPE_SUPPORT || 'N/A'}</td>
-                    <td class="py-2 px-4 border-b">${row.MECH_SUPPORT || 'N/A'}</td>
-                `;
-                tr.addEventListener('click', () => {
-                    showCardImage(row.NAME);
-                    tr.classList.add('clicked');
-                });
-                tableBody.appendChild(tr);
-
-                // Fetch and display the card image
-                fetchCardImage(row.NAME, tr.querySelector('.card-image'));
-            });
+            const cardNames = paginatedData.map(row => row.NAME).join('|');
+            fetchCardImages(cardNames, paginatedData);
 
             const totalPages = Math.ceil(filteredData.length / cardsPerPage);
             document.querySelectorAll('#pageInfo').forEach(el => el.textContent = `Page ${currentPage} of ${totalPages}`);
             document.querySelectorAll('#totalPages').forEach(el => el.textContent = totalPages);
         }
 
-        function fetchCardImage(cardName, imgElement) {
-            fetch(`https://yugipedia.com/api.php?action=query&titles=${encodeURIComponent(cardName)}&format=json&prop=pageimages&piprop=original`)
+        function fetchCardImages(cardNames, paginatedData) {
+            fetch(`https://yugipedia.com/api.php?action=query&titles=${encodeURIComponent(cardNames)}&format=json&prop=pageimages&piprop=original`)
                 .then(response => response.json())
                 .then(data => {
                     const pages = data.query.pages;
-                    const page = Object.values(pages)[0];
-                    if (page.original) {
-                        imgElement.src = page.original.source;
-                    } else {
-                        imgElement.src = '';
-                        imgElement.alt = 'Image not found';
-                    }
+                    const tableBody = document.querySelector('#cardTable tbody');
+                    tableBody.innerHTML = '';
+
+                    paginatedData.forEach(row => {
+                        const page = Object.values(pages).find(page => page.title === row.NAME);
+                        const imgSrc = page && page.original ? page.original.source : '';
+                        const statusClass = getStatusClass(row.STATUS);
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td class="py-2 px-4 border-b"><img src="${imgSrc}" alt="Card Image" class="card-image" data-name="${row.NAME}" style="width: 50px; height: auto;"></td>
+                            <td class="py-2 px-4 border-b">${row.NAME}</td>
+                            <td class="py-2 px-4 border-b ${statusClass}">${row.STATUS || 'N/A'}</td>
+                            <td class="py-2 px-4 border-b">${row.EFFECT || 'N/A'}</td>
+                            <td class="py-2 px-4 border-b">${row.TYPE || 'N/A'}</td>
+                            <td class="py-2 px-4 border-b">${row.SLICE || 'N/A'}</td>
+                            <td class="py-2 px-4 border-b">${row.ATT_SUPPORT || 'N/A'}</td>
+                            <td class="py-2 px-4 border-b">${row.TYPE_SUPPORT || 'N/A'}</td>
+                            <td class="py-2 px-4 border-b">${row.MECH_SUPPORT || 'N/A'}</td>
+                        `;
+                        tr.addEventListener('click', () => {
+                            showCardImage(row.NAME);
+                            tr.classList.add('clicked');
+                        });
+                        tableBody.appendChild(tr);
+                    });
                 });
         }
 
