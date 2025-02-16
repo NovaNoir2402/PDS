@@ -251,26 +251,17 @@
                 });
             });
 
-            // const applyFiltersButton = document.getElementById('applyFilters');
             const resetFiltersButton = document.getElementById('resetFilters');
             const confirmationModal = document.getElementById('confirmationModal');
             const confirmResetButton = document.getElementById('confirmReset');
             const cancelResetButton = document.getElementById('cancelReset');
             const closeButtons = document.querySelectorAll('.close');
 
-            // applyFiltersButton.addEventListener('click', applyFilters);
 
             document.getElementById('nameSearch').addEventListener('input', applyFilters);
             document.getElementById('effectSearch').addEventListener('input', applyFilters);
             document.querySelectorAll('input[list]').forEach(input => input.addEventListener('input', applyFilters));
 
-            // document.querySelectorAll('input').forEach(input => {
-            //     input.addEventListener('keypress', function (e) {
-            //         if (e.key === 'Enter') {
-            //             applyFilters();
-            //         }
-            //     });
-            // });
 
             resetFiltersButton.addEventListener('click', function () {
                 confirmationModal.style.display = 'block';
@@ -284,7 +275,7 @@
                 document.getElementById('attSupportFilterInput').value = '';
                 document.getElementById('typeSupportFilterInput').value = '';
                 document.getElementById('mechSupportFilterInput').value = '';
-                displayCards();
+                applyFilters();
                 confirmationModal.style.display = 'none';
             });
 
