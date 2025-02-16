@@ -153,6 +153,7 @@
             <datalist id="mechSupportFilter"></datalist>
         </div>
         <div class="flex justify-start mb-4">
+            <button id="applyFilters" class="p-2 bg-blue-500 text-white rounded mr-2">Apply Filters</button>
             <button id="resetFilters" class="p-2 bg-red-500 text-white rounded">Reset Filters</button>
         </div>
         <div class="flex justify-between items-center mb-4">
@@ -219,6 +220,7 @@
         let currentPage = 1;
         let cardsPerPage = 25;
         const imageCache = {};
+        const cardsWithSuffix = ["Absolute Powerforce"]; // List of card names that need the (card) suffix
 
         document.addEventListener('DOMContentLoaded', function () {
             fetch('cards.csv')
@@ -248,11 +250,14 @@
                 });
             });
 
+            const applyFiltersButton = document.getElementById('applyFilters');
             const resetFiltersButton = document.getElementById('resetFilters');
             const confirmationModal = document.getElementById('confirmationModal');
             const confirmResetButton = document.getElementById('confirmReset');
             const cancelResetButton = document.getElementById('cancelReset');
             const closeButtons = document.querySelectorAll('.close');
+
+            applyFiltersButton.addEventListener('click', applyFilters);
 
             resetFiltersButton.addEventListener('click', function () {
                 confirmationModal.style.display = 'block';
@@ -405,7 +410,9 @@
             const endIndex = startIndex + cardsPerPage;
             const paginatedData = filteredData.slice(startIndex, endIndex);
 
-            const cardNames = paginatedData.map(row => row.NAME).join('|');
+            const cardNames = paginatedData.map(row => {
+                return cardsWithSuffix.includes(row.NAME) ? `${row.NAME} (card)` : row.NAME;
+            }).join('|');
             fetchCardImages(cardNames, paginatedData);
 
             const totalPages = Math.ceil(filteredData.length / cardsPerPage);
@@ -422,7 +429,8 @@
                     tableBody.innerHTML = '';
 
                     paginatedData.forEach(row => {
-                        const page = Object.values(pages).find(page => page.title === row.NAME);
+                        const pageTitle = cardsWithSuffix.includes(row.NAME) ? `${row.NAME} (card)` : row.NAME;
+                        const page = Object.values(pages).find(page => page.title === pageTitle);
                         const imgSrc = page && page.original ? page.original.source : '';
                         const statusClass = getStatusClass(row.STATUS);
                         const tr = document.createElement('tr');
@@ -467,7 +475,8 @@
             const cardImage = document.getElementById("cardImage");
 
             // Use the MediaWiki API to get the card image URL
-            fetch(`https://yugipedia.com/api.php?action=query&titles=${encodeURIComponent(cardName)}&format=json&prop=pageimages&piprop=original`)
+            const pageTitle = cardsWithSuffix.includes(cardName) ? `${cardName} (card)` : cardName;
+            fetch(`https://yugipedia.com/api.php?action=query&titles=${encodeURIComponent(pageTitle)}&format=json&prop=pageimages&piprop=original`)
                 .then(response => response.json())
                 .then(data => {
                     const pages = data.query.pages;
@@ -499,5 +508,4 @@
         document.querySelectorAll('input[list]').forEach(input => input.addEventListener('input', applyFilters));
     </script>
 </body>
-
 </html>
