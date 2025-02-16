@@ -153,7 +153,6 @@
             <datalist id="mechSupportFilter"></datalist>
         </div>
         <div class="flex justify-start mb-4">
-            <button id="applyFilters" class="p-2 bg-blue-500 text-white rounded mr-2">Apply Filters</button>
             <button id="resetFilters" class="p-2 bg-red-500 text-white rounded">Reset Filters</button>
         </div>
         <div class="flex justify-between items-center mb-4">
@@ -220,7 +219,9 @@
         let currentPage = 1;
         let cardsPerPage = 25;
         const imageCache = {};
-        const cardsWithSuffix = ["Absolute Powerforce"]; // List of card names that need the (card) suffix
+        const cardsWithSuffix = ["Absolute Powerforce", "Cybernetic Horizon", "Cybernetic Revolution",
+            "Duelist Alliance", "Generation Force", "Light of Destruction",
+            "Labyrinth of Nightmare", "Pharaoh's Servant"];
 
         document.addEventListener('DOMContentLoaded', function () {
             fetch('cards.csv')
@@ -250,14 +251,26 @@
                 });
             });
 
-            const applyFiltersButton = document.getElementById('applyFilters');
+            // const applyFiltersButton = document.getElementById('applyFilters');
             const resetFiltersButton = document.getElementById('resetFilters');
             const confirmationModal = document.getElementById('confirmationModal');
             const confirmResetButton = document.getElementById('confirmReset');
             const cancelResetButton = document.getElementById('cancelReset');
             const closeButtons = document.querySelectorAll('.close');
 
-            applyFiltersButton.addEventListener('click', applyFilters);
+            // applyFiltersButton.addEventListener('click', applyFilters);
+
+            document.getElementById('nameSearch').addEventListener('input', applyFilters);
+            document.getElementById('effectSearch').addEventListener('input', applyFilters);
+            document.querySelectorAll('input[list]').forEach(input => input.addEventListener('input', applyFilters));
+
+            // document.querySelectorAll('input').forEach(input => {
+            //     input.addEventListener('keypress', function (e) {
+            //         if (e.key === 'Enter') {
+            //             applyFilters();
+            //         }
+            //     });
+            // });
 
             resetFiltersButton.addEventListener('click', function () {
                 confirmationModal.style.display = 'block';
@@ -378,6 +391,8 @@
         }
 
         function applyFilters() {
+            // Log that the function have been called
+            console.log('applyFilters() called');
             currentPage = 1; // Reset to the first page when filters are applied
             displayCards();
         }
@@ -503,9 +518,8 @@
             }
         }
 
-        document.getElementById('nameSearch').addEventListener('input', applyFilters);
-        document.getElementById('effectSearch').addEventListener('input', applyFilters);
-        document.querySelectorAll('input[list]').forEach(input => input.addEventListener('input', applyFilters));
+
     </script>
 </body>
+
 </html>
