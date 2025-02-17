@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pure Duel Series Rules</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        body.dark-mode {
+            background-color: #1a202c;
+            color: #a0aec0;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+        }
+
+        header.dark-mode {
+            background-color: #2d3748;
+        }
+
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+        }
+
+        nav a.dark-mode {
+            color: #a0aec0;
+        }
+
+        .logo {
+            margin: 50px 0;
+        }
+
+        .logo img {
+            width: 100%;
+            height: auto;
+        }
+
+        .dark-mode-toggle {}
+    </style>
+</head>
+
+<body class="bg-gray-100 text-gray-900">
+    <header class="bg-gray-800 text-white p-4">
+        <nav class="container mx-auto flex justify-between">
+            <a href="index.html" class="text-xl">Home Page</a>
+            <a href="cardlist.html" class="text-xl">Card List</a>
+            <a href="rules.html" class="text-xl font-bold">Rules</a>
+        </nav>
+    </header>
+    <div class="container mx-auto p-4 flex justify-start">
+        <div class="dark-mode-toggle">
+            <label for="darkModeToggle">Dark Mode</label>
+            <input type="checkbox" id="darkModeToggle" checked>
+        </div>
+    </div>
+    <div class="container mx-auto p-4 flex justify-start">
+        <div class="container mx-auto p-4 text-left">
+            <div class="mt-8">
+                <h2 class="text-2xl font-bold mb-4">Rules</h2>
+                <h3 class="text-xl font-bold mt-4">Cards you are allowed to play</h3>
+                <ol class="list-decimal list-inside">
+                    <li><strong>Archetypal Cards:</strong> According to the given name of your PDS Slice, you are
+                        allowed to play any cards belonging to that slice. The general guideline is to search for
+                        the archetypes in the EDOPro search engine (unless stated otherwise), but the best way to
+                        see which card you are allowed to use is by using ⁠resource.</li>
+                    <li><strong>Emperor Supports:</strong> After choosing a monster in your archetype as your
+                        Emperor, you will get to play
+                        <ul class="list-disc list-inside ml-4">
+                            <li>Generic Monster, Spell, or Trap that directly support the Attribute, Type, and/or
+                                Card Type of your emperor in its text (You can see the list of usable cards in
+                                ⁠resource).</li>
+                            <li>Any Normal Monster that shares both the Attribute and Type of the Emperor.</li>
+                            <li>The Kaiju Files: You can also choose to play up to a playset of the Kaiju that
+                                shared the same attribute as your Emperor (in the case of LIGHT, Jizukiru is the
+                                selected option).</li>
+                        </ul>
+                        Emperor Supports CANNOT be chosen as an Emperor.
+                    </li>
+                    <li><strong>Additional Inclusions:</strong> Additional Inclusions are cards that are
+                        specifically mentioned on the text of an archetypal card (including as its Summoning
+                        Condition) but does not belong to that archetype.
+                        <ul class="list-disc list-inside ml-4">
+                            <li>e.g. Torrential Tribute is mentioned in the text of Fury of Kairyu-Shin</li>
+                            <li>e.g. Majestic Dragon is mentioned in the summoning condition of Majestic Red Dragon
+                            </li>
+                        </ul>
+                        You are allowed to play Additional Inclusions in your Deck based on the allowed number on
+                        the PDS F&L List. Additional Inclusions CANNOT be chosen as an Emperor.
+                    </li>
+                    <li><strong>Worthless Inclusions:</strong> Worthless Inclusions are unspecified cards that are
+                        required to fulfill the summoning condition or activation cost of an archetypal card.
+                        <ul class="list-disc list-inside ml-4">
+                            <li>e.g. a Machine "Cyber" with different attribute is required to activate the effect
+                                of Cybernetic Horizon in Cyberdark</li>
+                            <li>e.g. a Deck with a Synchro Monster but no Tuner to use it</li>
+                        </ul>
+                        You are allowed to play Worthless Inclusions in your Deck based on the allowed number on the
+                        PDS F&L List. Which card is considered to be the Worthless Inclusion will be decided by the
+                        people. Worthless Inclusions CANNOT be chosen as an Emperor.
+                        <ul class="list-disc list-inside ml-4">
+                            <li>e.g. Cyber Ogre (who is pretty useless) can be played in Cyberdark to activate
+                                Cybernetic Horizon.</li>
+                            <li>e.g. a random Tuner(s) (preferably a vanilla with 0/0) with Level that is possible
+                                to become Synchro Materials for said Synchro Monster can be played. (If you play 3
+                                of that Synchro Monster, you can play up to 3 worthless tuners, either 3 different
+                                ones or a playset)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Miscellaneousaurus:</strong> When a card requires specific conditions that the
+                        archetype itself cannot fulfill, exceptions can be made on a case-by-case basis
+                        <ul class="list-disc list-inside ml-4">
+                            <li>e.g. You are allowed to have a full extra deck of random monsters to banish
+                                face-down in Nemleria</li>
+                            <li>e.g. You are allowed to have cards in your Extra Deck (whose Level is higher than
+                                all the Nekroz monster) to activate Nekroz Kaleidoscope in Nekroz (up to the number
+                                of Nekroz Kaleidoscope you play)</li>
+                            <li>e.g. You are allowed to have cards in Extra Deck to banish for the effect of Gizmek
+                                Orochi the Serpentron Sky Slasher in Gizmek (a playset for each copy of Orochi you
+                                play)</li>
+                            <li>Decks with fusion monsters but no archetypal fusion spells are allowed to play 3
+                                copies of Polymerization</li>
+                        </ul>
+                        Make sure to always check ⁠resource to see which card belongs to which slice.
+                    </li>
+                </ol>
+                <h3 class="text-xl font-bold mt-4">Cards you are NOT allowed to play</h3>
+                <p>Unless the card is strictly banned on the PDS Forbidden List (you can see this in ⁠resource), you
+                    can play 03 copies of it. However, with good sportsmanship in mind, refrain from playing
+                    floodgates or cards that would generally make the game unenjoyable.</p>
+                <h3 class="text-xl font-bold mt-4">Deck Size Rules</h3>
+                <p>Minimum deck size is 20, Maximum deck size is 40 with at least 15 cards belonging to the slice.
+                    The maximum count for Emperor support is 9 between your Main, Extra, and Side Deck. Both
+                    Worthless and Additional Inclusions are considered as Archetypal cards.</p>
+                <h3 class="text-xl font-bold mt-4">The Master Peace Treaty - the PDS F&L List</h3>
+                <p>Cards that are among these categories are banned in PDS:</p>
+                <ul class="list-disc list-inside ml-4">
+                    <li>Cards that are (or would enable other cards to be) permanently unaffected by other cards'
+                        effects;</li>
+                    <li>Cards with strong interruption/OTK capacity that are also (or would also enable other cards
+                        to be) temporarily unaffected by other cards' effects</li>
+                    <li>Cards that have a mix of strong protection and interruptions/OTK capacity;</li>
+                    <li>Cards with oppressive lingering floodgate effects (Restriction to Summons, Effects and/or
+                        Activations);</li>
+                    <li>Cards that allow FTKs or obnoxious burn effects;</li>
+                    <li>Generic cards that are generic endboard pieces (or enable generic endboard pieces) that can
+                        be made in most decks.</li>
+                </ul>
+                <p>Cards that are among these categories are limited in PDS:</p>
+                <ul class="list-disc list-inside ml-4">
+                    <li>Cards that would cause unhealthy game state at multiple (handloop/deck-out, strong burn
+                        effect, cards that are (or would enable other cards to be) immune to responses, etc.);</li>
+                    <li>Cards that have strong interruption/protection effect that can be made at multiple across a
+                        duel</li>
+                    <li>Generic cards that are banned/limited in the TCG;</li>
+                    <li>Generic endboard pieces with strong interruption or advantage-gaining effects</li>
+                </ul>
+            </div>
+        </div>
+        <script>
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            darkModeToggle.addEventListener('change', function () {
+                document.body.classList.toggle('dark-mode');
+                document.querySelector('header').classList.toggle('dark-mode');
+                document.querySelectorAll('nav a').forEach(element => {
+                    element.classList.toggle('dark-mode');
+                });
+            });
+
+            // Initialize dark mode based on the checkbox state
+            if (darkModeToggle.checked) {
+                document.body.classList.add('dark-mode');
+                document.querySelector('header').classList.add('dark-mode');
+                document.querySelectorAll('nav a').forEach(element => {
+                    element.classList.add('dark-mode');
+                });
+            }
+        </script>
+</body>
+
+</html>
