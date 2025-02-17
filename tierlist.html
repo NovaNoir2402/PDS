@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pure Duel Series Tier List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        body.dark-mode {
+            background-color: #1a202c;
+            color: #a0aec0;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+        }
+
+        header.dark-mode {
+            background-color: #2d3748;
+        }
+
+        table.dark-mode {
+            background-color: #2d3748;
+            color: #a0aec0;
+        }
+
+        th.dark-mode,
+        td.dark-mode {
+            border-color: #4a5568;
+        }
+
+        th.dark-mode {
+            background-color: #2d3748;
+        }
+
+        tr.dark-mode:hover {
+            background-color: #f5f5f5;
+        }
+
+        tr.dark-mode.clicked {
+            background-color: #718096;
+        }
+
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+        }
+
+        nav a.dark-mode {
+            color: #a0aec0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+            white-space: pre-wrap;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #4a5568;
+            cursor: pointer;
+        }
+
+        tr.clicked {
+            background-color: #dcdcdc;
+        }
+
+        .dark-mode-toggle {}
+    </style>
+</head>
+
+<body class="bg-gray-100 text-gray-900">
+    <header class="bg-gray-800 text-white p-4">
+        <nav class="container mx-auto flex justify-between">
+            <a href="index.html" class="text-xl">Home Page</a>
+            <a href="cardlist.html" class="text-xl">Card List</a>
+            <a href="rules.html" class="text-xl">Rules</a>
+            <a href="tierlist.html" class="text-xl font-bold">Tier List</a>
+        </nav>
+    </header>
+    <div class="container mx-auto p-4 flex justify-start">
+        <div class="dark-mode-toggle">
+            <label for="darkModeToggle">Dark Mode</label>
+            <input type="checkbox" id="darkModeToggle" checked>
+        </div>
+    </div>
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold mb-4 text-center">Pure Duel Series Slices</h1>
+        <div id="loadingOverlay" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
+            <div class="text-white text-2xl">Loading...</div>
+        </div>
+        <div class="overflow-x-auto">
+            <table id="slicesTable" class="min-w-full bg-white border border-gray-200">
+                <thead>
+                    <tr>
+                        <th class="py-2 px-4 border-b">Image</th>
+                        <th class="py-2 px-4 border-b">Name</th>
+                        <th class="py-2 px-4 border-b">Tier</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.style.display = 'flex';
+            fetch('https://script.google.com/macros/s/AKfycby0rtjSaISnTxZ3BnUH6Pr3Lxfklzte6UTL8mJR2GPiLnS3v2WCNiRumnJsUF_wDCt4qA/exec?sheetName=Slices')
+                .then(response => response.json())
+                .then(data => {
+                    const slicesData = data.slice(1).map(row => ({
+                        NAME: row[0],
+                        TIER: row[1]
+                    }));
+                    fetchSliceImages(slicesData);
+                    loadingOverlay.style.display = 'none';
+                });
+
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            darkModeToggle.addEventListener('change', function () {
+                document.body.classList.toggle('dark-mode');
+                document.querySelector('header').classList.toggle('dark-mode');
+                document.querySelectorAll('nav a').forEach(element => {
+                    element.classList.toggle('dark-mode');
+                });
+                document.querySelectorAll('table, th, td, tr').forEach(element => {
+                    element.classList.toggle('dark-mode');
+                });
+            });
+
+            // Initialize dark mode based on the checkbox state
+            if (darkModeToggle.checked) {
+                document.body.classList.add('dark-mode');
+                document.querySelector('header').classList.add('dark-mode');
+                document.querySelectorAll('nav a').forEach(element => {
+                    element.classList.add('dark-mode');
+                });
+                document.querySelectorAll('table, th, td, tr').forEach(element => {
+                    element.classList.add('dark-mode');
+                });
+            }
+        });
+
+        function fetchSliceImages(slicesData) {
+            const tableBody = document.querySelector('#slicesTable tbody');
+            tableBody.innerHTML = '';
+
+            const batchSize = 50;
+            const sliceNamesBatches = [];
+
+            for (let i = 0; i < slicesData.length; i += batchSize) {
+                const batch = slicesData.slice(i, i + batchSize).map(slice => slice.NAME.split('/')[0]).join('|');
+                sliceNamesBatches.push(batch);
+            }
+
+            Promise.all(sliceNamesBatches.map(batch =>
+                fetch(`https://yugipedia.com/api.php?action=query&titles=${encodeURIComponent(batch)}&format=json&prop=pageimages&piprop=original`)
+                    .then(response => response.json())
+            )).then(results => {
+                const pages = results.reduce((acc, result) => {
+                    return { ...acc, ...result.query.pages };
+                }, {});
+
+                slicesData.forEach(slice => {
+                    const firstName = slice.NAME.split('/')[0];
+                    const page = Object.values(pages).find(page => page.title === firstName);
+                    const imgSrc = page && page.original ? page.original.source : '';
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                <td class="py-2 px-4 border-b"><img src="${imgSrc}" alt="Slice Image" class="slice-image" data-name="${slice.NAME}" style="width: 100px; height: auto;"></td>
+                <td class="py-2 px-4 border-b">${slice.NAME}</td>
+                <td class="py-2 px-4 border-b">${slice.TIER}</td>
+            `;
+                    tableBody.appendChild(tr);
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>
