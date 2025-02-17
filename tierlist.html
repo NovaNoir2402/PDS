@@ -87,7 +87,7 @@
             background-color: #dcdcdc;
         }
 
-        .dark-mode-toggle {}
+        .dark-mode-toggle {                }
     </style>
 </head>
 
@@ -111,6 +111,12 @@
         <div id="loadingOverlay" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
             <div class="text-white text-2xl">Loading...</div>
         </div>
+        <div class="mb-4">
+            <label for="tierFilter" class="mr-2">Filter by Tier:</label>
+            <select id="tierFilter" class="p-2 border rounded">
+                <option value="">All</option>
+            </select>
+        </div>
         <div class="overflow-x-auto">
             <table id="slicesTable" class="min-w-full bg-white border border-gray-200">
                 <thead>
@@ -125,16 +131,20 @@
         </div>
     </div>
     <script>
+        let slicesData = [];
+        let imageCache = {};
+
         document.addEventListener('DOMContentLoaded', function () {
             const loadingOverlay = document.getElementById('loadingOverlay');
             loadingOverlay.style.display = 'flex';
             fetch('https://script.google.com/macros/s/AKfycby0rtjSaISnTxZ3BnUH6Pr3Lxfklzte6UTL8mJR2GPiLnS3v2WCNiRumnJsUF_wDCt4qA/exec?sheetName=Slices')
                 .then(response => response.json())
                 .then(data => {
-                    const slicesData = data.slice(1).map(row => ({
+                    slicesData = data.slice(1).map(row => ({
                         NAME: row[0],
                         TIER: row[1]
                     }));
+                    populateTierFilter(slicesData);
                     fetchSliceImages(slicesData);
                     loadingOverlay.style.display = 'none';
                 });
@@ -162,12 +172,25 @@
                     element.classList.add('dark-mode');
                 });
             }
+
+            document.getElementById('tierFilter').addEventListener('change', function () {
+                const selectedTier = this.value;
+                displaySlices(selectedTier);
+            });
         });
 
-        function fetchSliceImages(slicesData) {
-            const tableBody = document.querySelector('#slicesTable tbody');
-            tableBody.innerHTML = '';
+        function populateTierFilter(slicesData) {
+            const tierFilter = document.getElementById('tierFilter');
+            const uniqueTiers = [...new Set(slicesData.map(slice => slice.TIER))];
+            uniqueTiers.forEach(tier => {
+                const option = document.createElement('option');
+                option.value = tier;
+                option.textContent = tier;
+                tierFilter.appendChild(option);
+            });
+        }
 
+        function fetchSliceImages(slicesData) {
             const batchSize = 50;
             const sliceNamesBatches = [];
 
@@ -188,14 +211,28 @@
                     const firstName = slice.NAME.split('/')[0];
                     const page = Object.values(pages).find(page => page.title === firstName);
                     const imgSrc = page && page.original ? page.original.source : '';
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                <td class="py-2 px-4 border-b"><img src="${imgSrc}" alt="Slice Image" class="slice-image" data-name="${slice.NAME}" style="width: 100px; height: auto;"></td>
-                <td class="py-2 px-4 border-b">${slice.NAME}</td>
-                <td class="py-2 px-4 border-b">${slice.TIER}</td>
-            `;
-                    tableBody.appendChild(tr);
+                    imageCache[slice.NAME] = imgSrc;
                 });
+
+                displaySlices();
+            });
+        }
+
+        function displaySlices(selectedTier = '') {
+            const tableBody = document.querySelector('#slicesTable tbody');
+            tableBody.innerHTML = '';
+
+            const filteredData = selectedTier ? slicesData.filter(slice => slice.TIER === selectedTier) : slicesData;
+
+            filteredData.forEach(slice => {
+                const imgSrc = imageCache[slice.NAME] || '';
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="py-2 px-4 border-b"><img src="${imgSrc}" alt="Slice Image" class="slice-image" data-name="${slice.NAME}" style="width: 100px; height: auto;"></td>
+                    <td class="py-2 px-4 border-b">${slice.NAME}</td>
+                    <td class="py-2 px-4 border-b">${slice.TIER}</td>
+                `;
+                tableBody.appendChild(tr);
             });
         }
     </script>
