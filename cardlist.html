@@ -255,12 +255,18 @@
                 .then(data => {
                     // Process the data to disregard the first 4 empty columns and combine support columns
                     cardData = data.slice(1).map(row => ({
-                        NAME: row[4],
-                        STATUS: row[5],
-                        EFFECT: row[6],
-                        TYPE: row[7],
-                        SLICE: row[14],
-                        SUPPORT: [row[15], row[16], row[17]].filter(Boolean).join(', ')
+                        NAME: row[0],
+                        STATUS: row[1],
+                        EFFECT: row[2],
+                        TYPE: row[3],
+                        MATTRIBUTE: row[4],
+                        MTYPE: row[5],
+                        LEVEL: row[6],
+                        SCALE: row[7],
+                        ATK: row[8],
+                        DEF: row[9],
+                        SLICE: row[10],
+                        SUPPORT: [row[11], row[12], row[13]].filter(Boolean).join(', ')
                     }));
                     populateFilters();
                     displayCards();
