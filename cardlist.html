@@ -46,7 +46,7 @@
 
         .filters.dark-mode input {
             background-color: #2d3748;
-            color: #a0aec0;
+            color: black;
             border-color: #4a5568;
         }
 
@@ -79,6 +79,14 @@
 
         .filters {
             margin-bottom: 10px;
+        }
+
+        .filters input {
+            color: black;
+        }
+
+        .filters input::placeholder {
+            color: #a0aec0;
         }
 
         .modal {
@@ -170,6 +178,14 @@
             <input list="mechSupportFilter" id="mechSupportFilterInput" placeholder="Search by Mechanic Support"
                 class="p-2 border rounded">
             <datalist id="mechSupportFilter"></datalist>
+            <input type="text" id="levelSearch" placeholder="Search by Level/Rank/Link" class="p-2 border rounded">
+            <input list="matrSearch" id="matrSearchInput" placeholder="Search by Monster Attribute" class="p-2 border rounded">
+            <datalist id="matrSearch"></datalist>
+            <input list="mtypeSearch" id="mtypeSearchInput" placeholder="Search by Monster Type" class="p-2 border rounded">
+            <datalist id="mtypeSearch"></datalist>
+            <input type="text" id="scaleSearch" placeholder="Search by Scale" class="p-2 border rounded">
+            <input type="text" id="atkSearch" placeholder="Search by ATK" class="p-2 border rounded">
+            <input type="text" id="defSearch" placeholder="Search by DEF" class="p-2 border rounded">
         </div>
         <div class="flex justify-start mb-4">
             <button id="resetFilters" class="p-2 bg-red-500 text-white rounded">Reset Filters</button>
@@ -204,6 +220,8 @@
                         onkeypress="sortTable('Effect')">Effect</th>
                     <th class="py-2 px-4 border-b cursor-pointer" onclick="sortTable('Type')"
                         onkeypress="sortTable('Type')">Type</th>
+                    <th class="py-2 px-4 border-b cursor-pointer" onclick="sortTable('Stats')"
+                        onkeypress="sortTable('Stats')">Stats</th>
                     <th class="py-2 px-4 border-b cursor-pointer" onclick="sortTable('Slice')"
                         onkeypress="sortTable('Slice')">Slice</th>
                     <th class="py-2 px-4 border-b cursor-pointer" onclick="sortTable('Support')"
@@ -245,7 +263,7 @@
         const imageCache = {};
         const cardsWithSuffix = ["Absolute Powerforce", "Cybernetic Horizon", "Cybernetic Revolution",
             "Duelist Alliance", "Generation Force", "Light of Destruction",
-            "Labyrinth of Nightmare", "Pharaoh's Servant", "Pendulum Scale"];
+            "Labyrinth of Nightmare", "Pharaoh's Servant", "Pendulum Scale", "Azamina"];
 
         document.addEventListener('DOMContentLoaded', function () {
             const loadingOverlay = document.getElementById('loadingOverlay');
@@ -266,7 +284,8 @@
                         ATK: row[8],
                         DEF: row[9],
                         SLICE: row[10],
-                        SUPPORT: [row[11], row[12], row[13]].filter(Boolean).join(', ')
+                        SUPPORT: [row[11], row[12], row[13]].filter(Boolean).join(', '),
+                        STATS: generateStats(row[6], row[4], row[5], row[7], row[8], row[9])
                     }));
                     populateFilters();
                     displayCards();
@@ -295,6 +314,12 @@
             document.getElementById('nameSearch').addEventListener('input', applyFilters);
             document.getElementById('effectSearch').addEventListener('input', applyFilters);
             document.querySelectorAll('input[list]').forEach(input => input.addEventListener('input', applyFilters));
+            document.getElementById('levelSearch').addEventListener('input', applyFilters);
+            document.getElementById('matrSearchInput').addEventListener('input', applyFilters);
+            document.getElementById('mtypeSearchInput').addEventListener('input', applyFilters);
+            document.getElementById('scaleSearch').addEventListener('input', applyFilters);
+            document.getElementById('atkSearch').addEventListener('input', applyFilters);
+            document.getElementById('defSearch').addEventListener('input', applyFilters);
 
             resetFiltersButton.addEventListener('click', function () {
                 confirmationModal.style.display = 'block';
@@ -308,6 +333,12 @@
                 document.getElementById('attSupportFilterInput').value = '';
                 document.getElementById('typeSupportFilterInput').value = '';
                 document.getElementById('mechSupportFilterInput').value = '';
+                document.getElementById('levelSearch').value = '';
+                document.getElementById('matrSearchInput').value = '';
+                document.getElementById('mtypeSearchInput').value = '';
+                document.getElementById('scaleSearch').value = '';
+                document.getElementById('atkSearch').value = '';
+                document.getElementById('defSearch').value = '';
                 applyFilters();
                 confirmationModal.style.display = 'none';
             });
@@ -361,8 +392,18 @@
             });
         });
 
+        // Function to generate the Stats field
+        function generateStats(level, mattribute, mtype, scale, atk, def) {
+            if (!level && !scale && !atk && !def) return 'N/A';
+            let stats = `Level/Rank/Link ${level} ${mattribute} ${mtype}`;
+            if (scale) stats += `\nScale: ${scale}`;
+            stats += `\nATK/ ${atk}`;
+            if (def) stats += ` DEF/ ${def}`;
+            return stats;
+        }
+
         function populateFilters() {
-            const filters = ['sliceFilter', 'attSupportFilter', 'typeSupportFilter', 'mechSupportFilter', 'typeFilter'];
+            const filters = ['sliceFilter', 'attSupportFilter', 'typeSupportFilter', 'mechSupportFilter', 'typeFilter', 'matrSearch', 'mtypeSearch'];
             filters.forEach(filterId => {
                 const filter = document.getElementById(filterId);
                 filter.innerHTML = '';
@@ -396,6 +437,21 @@
                 if (filterId === 'attSupportFilter' || filterId === 'typeSupportFilter' || filterId === 'mechSupportFilter') {
                     console.log(`Values for ${filterId}:`, uniqueValues);
                 }
+                if (filterId === 'matrSearch') {
+                    ['Light', 'Dark', 'Water', 'Fire', 'Earth', 'Wind', 'Divine'].forEach(value => {
+                        const option = document.createElement('option');
+                        option.value = value;
+                        filter.appendChild(option);
+                    });
+                }
+                if (filterId === 'mtypeSearch') {
+                    ['Beast-Warrior', 'Zombie', 'Fiend', 'Dinosaur', 'Illusion', 'Insect', 'Winged Beast', 'Sea Serpent', 'Machine', 'Aqua', 'Pyro', 'Thunder', 'Spellcaster', 'Plant', 'Rock', 'Reptile', 'Fairy', 'Fish', 'Divine-Beast', 'Psychic', 'Wyrm', 'Cyberse', 'Dragon', 'Beast', 'Warrior'].forEach(value => {
+                        const option = document.createElement('option');
+                        option.value = value;
+                        filter.appendChild(option);
+                    });
+                }
+                
             });
         }
 
@@ -414,6 +470,12 @@
             const typeSupportFilter = document.getElementById('typeSupportFilterInput').value.toLowerCase();
             const mechSupportFilter = document.getElementById('mechSupportFilterInput').value.toLowerCase();
             const typeFilter = document.getElementById('typeFilterInput').value.toLowerCase();
+            const levelSearch = document.getElementById('levelSearch').value.toLowerCase();
+            const matrSearch = document.getElementById('matrSearchInput').value.toLowerCase();
+            const mtypeSearch = document.getElementById('mtypeSearchInput').value.toLowerCase();
+            const scaleSearch = document.getElementById('scaleSearch').value.toLowerCase();
+            const atkSearch = document.getElementById('atkSearch').value.toLowerCase();
+            const defSearch = document.getElementById('defSearch').value.toLowerCase();
 
             const tableBody = document.querySelector('#cardTable tbody');
             tableBody.innerHTML = '';
@@ -430,6 +492,12 @@
                     (effectSearch === '' || row.EFFECT.toLowerCase().includes(effectSearch)) &&
                     (sliceFilter === '' || row.SLICE === sliceFilter || (sliceFilter === 'N/A' && !row.SLICE)) &&
                     (typeFilter === '' || row.TYPE && row.TYPE.toLowerCase().includes(typeFilter)) &&
+                    (levelSearch === '' || row.STATS.toLowerCase().includes('level/rank/link ' + levelSearch)) &&
+                    (matrSearch === '' || row.STATS.toLowerCase().includes(matrSearch)) &&
+                    (mtypeSearch === '' || row.STATS.toLowerCase().includes(mtypeSearch)) &&
+                    (scaleSearch === '' || row.STATS.toLowerCase().includes('scale: ' + scaleSearch)) &&
+                    (atkSearch === '' || row.STATS.toLowerCase().includes('atk/ ' + atkSearch)) &&
+                    (defSearch === '' || row.STATS.toLowerCase().includes('def/ ' + defSearch)) &&
                     (
                         !supportFilterActive ||
                         (hasAttSupportFilter && row.SUPPORT.toLowerCase().includes(attSupportFilter)) ||
@@ -473,6 +541,7 @@
                             <td class="py-2 px-4 border-b ${statusClass}">${row.STATUS || 'N/A'}</td>
                             <td class="py-2 px-4 border-b">${row.EFFECT || 'N/A'}</td>
                             <td class="py-2 px-4 border-b">${row.TYPE || 'N/A'}</td>
+                            <td class="py-2 px-4 border-b">${row.STATS || 'N/A'}</td>
                             <td class="py-2 px-4 border-b">${row.SLICE || 'N/A'}</td>
                             <td class="py-2 px-4 border-b">${row.SUPPORT || 'N/A'}</td>
                         `;
