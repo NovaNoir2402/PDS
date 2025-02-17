@@ -4,512 +4,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Card List</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <title>Pure Duel Series Homepage</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
         body.dark-mode {
             background-color: #1a202c;
             color: #a0aec0;
         }
 
-        table.dark-mode {
-            background-color: #2d3748;
-            color: #a0aec0;
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
         }
 
-        th.dark-mode,
-        td.dark-mode {
-            border-color: #4a5568;
-        }
-
-        th.dark-mode {
+        header.dark-mode {
             background-color: #2d3748;
         }
 
-        tr.dark-mode:hover {
-            background-color: #f5f5f5;
-        }
-
-        tr.dark-mode.clicked {
-            background-color: #718096;
-        }
-
-        .modal-content.dark-mode {
-            background-color: #2d3748;
-            color: #a0aec0;
-        }
-
-        .close.dark-mode {
-            color: #a0aec0;
-        }
-
-        .filters.dark-mode input {
-            background-color: #2d3748;
-            color: #a0aec0;
-            border-color: #4a5568;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-            white-space: pre-wrap;
-            /* Preserve whitespace and line breaks */
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        tr:hover {
-            background-color: #4a5568;
-            cursor: pointer;
-        }
-
-        tr.clicked {
-            background-color: #dcdcdc;
-        }
-
-        .filters {
-            margin-bottom: 10px;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 50;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
-            padding-top: 60px;
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 90%;
-            max-width: 500px;
-            text-align: center;
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: black;
+        nav a {
+            color: white;
+            margin: 0 15px;
             text-decoration: none;
-            cursor: pointer;
         }
 
-        #cardImage {
-            max-width: auto;
-            height: auto;
-            display: block;
-            margin: 0 auto;
+        nav a.dark-mode {
+            color: #a0aec0;
         }
+
+        .logo {
+            margin: 50px 0;
+        }
+
+        .logo img {
+            width: 100%;
+            height: auto;
+        }
+
+        .dark-mode-toggle {}
     </style>
 </head>
 
 <body class="bg-gray-100 text-gray-900">
-    <div class="container mx-auto p-4">
-        <div class="flex justify-end mb-4">
-            <label for="darkModeToggle" class="mr-2">Dark Mode</label>
+    <header class="bg-gray-800 text-white p-4">
+        <nav class="container mx-auto flex justify-between">
+            <a href="index.html" class="text-xl font-bold">Home Page</a>
+            <a href="cardlist.html" class="text-xl">Card List</a>
+            <a href="rules.html" class="text-xl">Rules</a>
+        </nav>
+    </header>
+    <div class="container mx-auto p-4 flex justify-start">
+        <div class="dark-mode-toggle">
+            <label for="darkModeToggle">Dark Mode</label>
             <input type="checkbox" id="darkModeToggle" checked>
         </div>
-        <h1 class="text-3xl font-bold mb-4 text-center">Pure Duel Series Card List</h1>
-        <p class="text-center text-sm text-gray-600">* Click/Tap on a card to view its image</p>
-        <div class="filters grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-            <input type="text" id="nameSearch" placeholder="Search by Name" class="p-2 border rounded">
-            <input type="text" id="effectSearch" placeholder="Search by Effect" class="p-2 border rounded">
-            <input list="typeFilter" id="typeFilterInput" placeholder="Search by Type" class="p-2 border rounded">
-            <datalist id="typeFilter"></datalist>
-            <input list="sliceFilter" id="sliceFilterInput" placeholder="Search by Slice" class="p-2 border rounded">
-            <datalist id="sliceFilter"></datalist>
-            <input list="attSupportFilter" id="attSupportFilterInput" placeholder="Search by Attribute Support"
-                class="p-2 border rounded">
-            <datalist id="attSupportFilter"></datalist>
-            <input list="typeSupportFilter" id="typeSupportFilterInput" placeholder="Search by Type Support"
-                class="p-2 border rounded">
-            <datalist id="typeSupportFilter"></datalist>
-            <input list="mechSupportFilter" id="mechSupportFilterInput" placeholder="Search by Mechanic Support"
-                class="p-2 border rounded">
-            <datalist id="mechSupportFilter"></datalist>
-        </div>
-        <div class="flex justify-start mb-4">
-            <button id="resetFilters" class="p-2 bg-red-500 text-white rounded">Reset Filters</button>
-        </div>
-        <div class="flex justify-between items-center mb-4">
-            <div>
-                <label for="cardsPerPage">Cards per page:</label>
-                <select id="cardsPerPage" class="p-2 border rounded">
-                    <option value="10">10</option>
-                    <option value="25" selected>25</option>
-                    <option value="50">50</option>
-                </select>
-            </div>
-            <div>
-                <button id="prevPage" class="p-2 bg-gray-500 text-white rounded">Previous</button>
-                <span id="pageInfo" class="mx-2">Page 1 of <span id="totalPages">1</span></span>
-                <button id="nextPage" class="p-2 bg-gray-500 text-white rounded">Next</button>
-            </div>
-        </div>
     </div>
-    <div class="overflow-x-auto">
-        <table id="cardTable" class="min-w-full bg-white border border-gray-200">
-            <thead>
-                <tr>
-                    <th class="py-2 px-4 border-b">Image</th>
-                    <th class="py-2 px-4 border-b">Name</th>
-                    <th class="py-2 px-4 border-b">Status</th>
-                    <th class="py-2 px-4 border-b">Effect</th>
-                    <th class="py-2 px-4 border-b">Type</th>
-                    <th class="py-2 px-4 border-b">Slice</th>
-                    <th class="py-2 px-4 border-b">Attribute Support</th>
-                    <th class="py-2 px-4 border-b">Type Support</th>
-                    <th class="py-2 px-4 border-b">Mechanic Support</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
-    <div class="flex justify-center items-center mt-4">
-        <button id="prevPage" class="p-2 bg-gray-500 text-white rounded">Previous</button>
-        <span id="pageInfo" class="mx-2">Page 1 of <span id="totalPages">1</span></span>
-        <button id="nextPage" class="p-2 bg-gray-500 text-white rounded">Next</button>
+    <div class="logo">
+        <img src="logo.png" alt="Logo">
     </div>
     </div>
-
-    <!-- The Modal -->
-    <div id="myModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <img id="cardImage" src="" alt="Card Image">
-        </div>
-    </div>
-
-    <!-- Confirmation Modal -->
-    <div id="confirmationModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <p>Are you sure you want to reset all filters?</p>
-            <button id="confirmReset" class="p-2 bg-red-500 text-white rounded">Yes</button>
-            <button id="cancelReset" class="p-2 bg-gray-500 text-white rounded">No</button>
-        </div>
-    </div>
-
     <script>
-        let cardData = [];
-        let currentPage = 1;
-        let cardsPerPage = 25;
-        const imageCache = {};
-        const cardsWithSuffix = ["Absolute Powerforce", "Cybernetic Horizon", "Cybernetic Revolution",
-            "Duelist Alliance", "Generation Force", "Light of Destruction",
-            "Labyrinth of Nightmare", "Pharaoh's Servant", "Pendulum Scale"];
-
-        document.addEventListener('DOMContentLoaded', function () {
-            fetch('cards.csv')
-                .then(response => response.text())
-                .then(data => {
-                    Papa.parse(data, {
-                        header: true,
-                        skipEmptyLines: true,
-                        complete: function (results) {
-                            cardData = results.data;
-                            populateFilters();
-                            displayCards();
-                        }
-                    });
-                });
-
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        darkModeToggle.addEventListener('change', function () {
             document.body.classList.toggle('dark-mode');
-            document.querySelectorAll('table, th, td, tr, .modal-content, .close, .filters input').forEach(element => {
+            document.querySelector('header').classList.toggle('dark-mode');
+            document.querySelectorAll('nav a').forEach(element => {
                 element.classList.toggle('dark-mode');
             });
-
-            const darkModeToggle = document.getElementById('darkModeToggle');
-            darkModeToggle.addEventListener('change', function () {
-                document.body.classList.toggle('dark-mode');
-                document.querySelectorAll('table, th, td, tr, .modal-content, .close, .filters input').forEach(element => {
-                    element.classList.toggle('dark-mode');
-                });
-            });
-
-            const resetFiltersButton = document.getElementById('resetFilters');
-            const confirmationModal = document.getElementById('confirmationModal');
-            const confirmResetButton = document.getElementById('confirmReset');
-            const cancelResetButton = document.getElementById('cancelReset');
-            const closeButtons = document.querySelectorAll('.close');
-
-
-            document.getElementById('nameSearch').addEventListener('input', applyFilters);
-            document.getElementById('effectSearch').addEventListener('input', applyFilters);
-            document.querySelectorAll('input[list]').forEach(input => input.addEventListener('input', applyFilters));
-
-
-            resetFiltersButton.addEventListener('click', function () {
-                confirmationModal.style.display = 'block';
-            });
-
-            confirmResetButton.addEventListener('click', function () {
-                document.getElementById('nameSearch').value = '';
-                document.getElementById('effectSearch').value = '';
-                document.getElementById('typeFilterInput').value = '';
-                document.getElementById('sliceFilterInput').value = '';
-                document.getElementById('attSupportFilterInput').value = '';
-                document.getElementById('typeSupportFilterInput').value = '';
-                document.getElementById('mechSupportFilterInput').value = '';
-                applyFilters();
-                confirmationModal.style.display = 'none';
-            });
-
-            cancelResetButton.addEventListener('click', function () {
-                confirmationModal.style.display = 'none';
-            });
-
-            closeButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    confirmationModal.style.display = 'none';
-                    document.getElementById('myModal').style.display = 'none';
-                });
-            });
-
-            window.addEventListener('click', function (event) {
-                if (event.target == confirmationModal) {
-                    confirmationModal.style.display = 'none';
-                }
-                if (event.target == document.getElementById('myModal')) {
-                    document.getElementById('myModal').style.display = 'none';
-                }
-            });
-
-            const cardsPerPageSelect = document.getElementById('cardsPerPage');
-            cardsPerPageSelect.addEventListener('change', function () {
-                cardsPerPage = parseInt(this.value);
-                currentPage = 1;
-                displayCards();
-            });
-
-            const prevPageButtons = document.querySelectorAll('#prevPage');
-            const nextPageButtons = document.querySelectorAll('#nextPage');
-
-            prevPageButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    if (currentPage > 1) {
-                        currentPage--;
-                        displayCards();
-                    }
-                });
-            });
-
-            nextPageButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    if (currentPage * cardsPerPage < cardData.length) {
-                        currentPage++;
-                        displayCards();
-                    }
-                });
-            });
         });
 
-        document.getElementById('csvFile').addEventListener('change', function (event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            Papa.parse(file, {
-                header: true,
-                skipEmptyLines: true,
-                complete: function (results) {
-                    cardData = results.data;
-                    populateFilters();
-                    displayCards();
-                }
-            });
-        });
-
-        function populateFilters() {
-            const filters = ['sliceFilter', 'attSupportFilter', 'typeSupportFilter', 'mechSupportFilter', 'typeFilter'];
-            filters.forEach(filterId => {
-                const filter = document.getElementById(filterId);
-                filter.innerHTML = '';
-                const uniqueValues = [...new Set(cardData.flatMap(card => (card[filterId.replace('Filter', '').toUpperCase()] || 'N/A').split(',').map(value => value.trim())))];
-                uniqueValues.forEach(value => {
-                    const option = document.createElement('option');
-                    option.value = value;
-                    filter.appendChild(option);
-                });
-                if (filterId === 'attSupportFilter') {
-                    ['Light', 'Dark', 'Water', 'Fire', 'Earth', 'Wind', 'Divine'].forEach(value => {
-                        const option = document.createElement('option');
-                        option.value = value;
-                        filter.appendChild(option);
-                    });
-                }
-                if (filterId === 'typeSupportFilter') {
-                    ['B.W.', 'Zombie', 'Fiend', 'Dinosaur', 'Illusion', 'Insect', 'W.B.', 'Sea Serpent', 'Machine', 'Aqua', 'Pyro', 'Thunder', 'Spellcaster', 'Plant', 'Rock', 'Reptile', 'Fairy', 'Fish', 'Divine-Beast', 'Psychic', 'Wyrm', 'Cyberse', 'Dragon', 'Beast', 'Warrior'].forEach(value => {
-                        const option = document.createElement('option');
-                        option.value = value;
-                        filter.appendChild(option);
-                    });
-                }
-                if (filterId === 'mechSupportFilter') {
-                    ['Ritual', 'Fusion', 'Synchro', 'Xyz', 'Pendulum', 'Link', 'Gemini'].forEach(value => {
-                        const option = document.createElement('option');
-                        option.value = value;
-                        filter.appendChild(option);
-                    });
-                }
-                if (filterId === 'attSupportFilter' || filterId === 'typeSupportFilter' || filterId === 'mechSupportFilter') {
-                    console.log(`Values for ${filterId}:`, uniqueValues);
-                }
+        // Initialize dark mode based on the checkbox state
+        if (darkModeToggle.checked) {
+            document.body.classList.add('dark-mode');
+            document.querySelector('header').classList.add('dark-mode');
+            document.querySelectorAll('nav a').forEach(element => {
+                element.classList.add('dark-mode');
             });
         }
-
-        function applyFilters() {
-            // Log that the function have been called
-            console.log('applyFilters() called');
-            currentPage = 1; // Reset to the first page when filters are applied
-            displayCards();
-        }
-
-        function displayCards() {
-            const nameSearch = document.getElementById('nameSearch').value.toLowerCase();
-            const effectSearch = document.getElementById('effectSearch').value.toLowerCase();
-            const sliceFilter = document.getElementById('sliceFilterInput').value;
-            const attSupportFilter = document.getElementById('attSupportFilterInput').value.toLowerCase();
-            const typeSupportFilter = document.getElementById('typeSupportFilterInput').value.toLowerCase();
-            const mechSupportFilter = document.getElementById('mechSupportFilterInput').value.toLowerCase();
-            const typeFilter = document.getElementById('typeFilterInput').value.toLowerCase();
-
-            const tableBody = document.querySelector('#cardTable tbody');
-            tableBody.innerHTML = '';
-
-            const filteredData = cardData.filter(row => {
-                return (
-                    (nameSearch === '' || row.NAME.toLowerCase().includes(nameSearch)) &&
-                    (effectSearch === '' || row.EFFECT.toLowerCase().includes(effectSearch)) &&
-                    (sliceFilter === '' || row.SLICE === sliceFilter || (sliceFilter === 'N/A' && !row.SLICE)) &&
-                    (attSupportFilter === '' || row.ATT_SUPPORT && row.ATT_SUPPORT.toLowerCase().includes(attSupportFilter)) &&
-                    (typeSupportFilter === '' || row.TYPE_SUPPORT && row.TYPE_SUPPORT.toLowerCase().includes(typeSupportFilter)) &&
-                    (mechSupportFilter === '' || row.MECH_SUPPORT && row.MECH_SUPPORT.toLowerCase().includes(mechSupportFilter)) &&
-                    (typeFilter === '' || row.TYPE && row.TYPE.toLowerCase().includes(typeFilter))
-                );
-            });
-
-            const startIndex = (currentPage - 1) * cardsPerPage;
-            const endIndex = startIndex + cardsPerPage;
-            const paginatedData = filteredData.slice(startIndex, endIndex);
-
-            const cardNames = paginatedData.map(row => {
-                return cardsWithSuffix.includes(row.NAME) ? `${row.NAME} (card)` : row.NAME;
-            }).join('|');
-            fetchCardImages(cardNames, paginatedData);
-
-            const totalPages = Math.ceil(filteredData.length / cardsPerPage);
-            document.querySelectorAll('#pageInfo').forEach(el => el.textContent = `Page ${currentPage} of ${totalPages}`);
-            document.querySelectorAll('#totalPages').forEach(el => el.textContent = totalPages);
-        }
-
-        function fetchCardImages(cardNames, paginatedData) {
-            fetch(`https://yugipedia.com/api.php?action=query&titles=${encodeURIComponent(cardNames)}&format=json&prop=pageimages&piprop=original`)
-                .then(response => response.json())
-                .then(data => {
-                    const pages = data.query.pages;
-                    const tableBody = document.querySelector('#cardTable tbody');
-                    tableBody.innerHTML = '';
-
-                    paginatedData.forEach(row => {
-                        const pageTitle = cardsWithSuffix.includes(row.NAME) ? `${row.NAME} (card)` : row.NAME;
-                        const page = Object.values(pages).find(page => page.title === pageTitle);
-                        const imgSrc = page && page.original ? page.original.source : '';
-                        const statusClass = getStatusClass(row.STATUS);
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td class="py-2 px-4 border-b"><img src="${imgSrc}" alt="Card Image" class="card-image" data-name="${row.NAME}" style="width: 50px; height: auto;"></td>
-                            <td class="py-2 px-4 border-b">${row.NAME}</td>
-                            <td class="py-2 px-4 border-b ${statusClass}">${row.STATUS || 'N/A'}</td>
-                            <td class="py-2 px-4 border-b">${row.EFFECT || 'N/A'}</td>
-                            <td class="py-2 px-4 border-b">${row.TYPE || 'N/A'}</td>
-                            <td class="py-2 px-4 border-b">${row.SLICE || 'N/A'}</td>
-                            <td class="py-2 px-4 border-b">${row.ATT_SUPPORT || 'N/A'}</td>
-                            <td class="py-2 px-4 border-b">${row.TYPE_SUPPORT || 'N/A'}</td>
-                            <td class="py-2 px-4 border-b">${row.MECH_SUPPORT || 'N/A'}</td>
-                        `;
-                        tr.addEventListener('click', () => {
-                            showCardImage(row.NAME);
-                            tr.classList.add('clicked');
-                        });
-                        tableBody.appendChild(tr);
-                    });
-                });
-        }
-
-        function getStatusClass(status) {
-            switch (status) {
-                case 'UNLIM':
-                    return 'bg-green-200 text-green-800';
-                case 'NA':
-                    return 'bg-gray-200 text-gray-800';
-                case 'LIM':
-                    return 'bg-yellow-200 text-yellow-800';
-                case 'BAN':
-                    return 'bg-red-200 text-red-800';
-                default:
-                    return '';
-            }
-        }
-
-        function showCardImage(cardName) {
-            const modal = document.getElementById("myModal");
-            const span = document.getElementsByClassName("close")[0];
-            const cardImage = document.getElementById("cardImage");
-
-            // Use the MediaWiki API to get the card image URL
-            const pageTitle = cardsWithSuffix.includes(cardName) ? `${cardName} (card)` : cardName;
-            fetch(`https://yugipedia.com/api.php?action=query&titles=${encodeURIComponent(pageTitle)}&format=json&prop=pageimages&piprop=original`)
-                .then(response => response.json())
-                .then(data => {
-                    const pages = data.query.pages;
-                    const page = Object.values(pages)[0];
-                    if (page.original) {
-                        cardImage.src = page.original.source;
-                    } else {
-                        cardImage.src = '';
-                        alert('Card image not found.');
-                    }
-                    modal.style.display = "block";
-                });
-
-            span.onclick = function () {
-                modal.style.display = "none";
-                document.querySelectorAll('tr.clicked').forEach(tr => tr.classList.remove('clicked'));
-            }
-
-            window.onclick = function (event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                    document.querySelectorAll('tr.clicked').forEach(tr => tr.classList.remove('clicked'));
-                }
-            }
-        }
-
-
     </script>
 </body>
 
