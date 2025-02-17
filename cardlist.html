@@ -259,8 +259,8 @@
                         STATUS: row[5],
                         EFFECT: row[6],
                         TYPE: row[7],
-                        SLICE: row[8],
-                        SUPPORT: [row[9], row[10], row[11]].filter(Boolean).join(', ')
+                        SLICE: row[14],
+                        SUPPORT: [row[15], row[16], row[17]].filter(Boolean).join(', ')
                     }));
                     populateFilters();
                     displayCards();
@@ -381,7 +381,7 @@
                     });
                 }
                 if (filterId === 'mechSupportFilter') {
-                    ['Ritual', 'Fusion', 'Synchro', 'Xyz', 'Pendulum', 'Link', 'Gemini', 'Oblivia'].forEach(value => {
+                    ['Ritual', 'Fusion', 'Synchro', 'Xyz', 'Pendulum', 'Link', 'Gemini', 'Supreme Oblivia', 'Lesser Oblivia'].forEach(value => {
                         const option = document.createElement('option');
                         option.value = value;
                         filter.appendChild(option);
