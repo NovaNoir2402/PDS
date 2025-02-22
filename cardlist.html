@@ -465,7 +465,7 @@
         function displayCards() {
             const nameSearch = document.getElementById('nameSearch').value.toLowerCase();
             const effectSearch = document.getElementById('effectSearch').value.toLowerCase();
-            const sliceFilter = document.getElementById('sliceFilterInput').value;
+            const sliceFilter = document.getElementById('sliceFilterInput').value.toLowerCase();
             const attSupportFilter = document.getElementById('attSupportFilterInput').value.toLowerCase();
             const typeSupportFilter = document.getElementById('typeSupportFilterInput').value.toLowerCase();
             const mechSupportFilter = document.getElementById('mechSupportFilterInput').value.toLowerCase();
@@ -490,7 +490,7 @@
                 return (
                     (nameSearch === '' || row.NAME.toLowerCase().includes(nameSearch)) &&
                     (effectSearch === '' || row.EFFECT.toLowerCase().includes(effectSearch)) &&
-                    (sliceFilter === '' || row.SLICE === sliceFilter || (sliceFilter === 'N/A' && !row.SLICE)) &&
+                    (sliceFilter === '' || row.SLICE.toLowerCase().includes(sliceFilter) || (sliceFilter === 'N/A' && !row.SLICE)) &&
                     (typeFilter === '' || row.TYPE && row.TYPE.toLowerCase().includes(typeFilter)) &&
                     (levelSearch === '' || row.STATS.toLowerCase().includes('level/rank/link ' + levelSearch)) &&
                     (matrSearch === '' || row.STATS.toLowerCase().includes(matrSearch)) &&
