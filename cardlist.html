@@ -175,7 +175,7 @@
             <input list="typeSupportFilter" id="typeSupportFilterInput" placeholder="Search by Type Support"
                 class="p-2 border rounded">
             <datalist id="typeSupportFilter"></datalist>
-            <input list="mechSupportFilter" id="mechSupportFilterInput" placeholder="Search by Mechanic Support"
+            <input list="mechSupportFilter" id="mechSupportFilterInput" placeholder="Search by Class Support"
                 class="p-2 border rounded">
             <datalist id="mechSupportFilter"></datalist>
             <input type="text" id="levelSearch" placeholder="Search by Level/Rank/Link" class="p-2 border rounded">
@@ -428,7 +428,7 @@
                     });
                 }
                 if (filterId === 'mechSupportFilter') {
-                    ['Ritual', 'Fusion', 'Synchro', 'Xyz', 'Pendulum', 'Link', 'Gemini', 'Supreme Oblivia', 'Lesser Oblivia', 'Normal'].forEach(value => {
+                    ['Ritual', 'Fusion', 'Synchro', 'Xyz', 'Pendulum', 'Link', 'Gemini', 'Supreme Oblivia', 'Lesser Oblivia', 'Normal', 'Generalist'].forEach(value => {
                         const option = document.createElement('option');
                         option.value = value;
                         filter.appendChild(option);
