@@ -142,7 +142,7 @@
                 .then(data => {
                     slicesData = data.slice(1).map(row => ({
                         NAME: row[0],
-                        TIER: row[1]
+                        TIER: row[2]
                     }));
                     populateTierFilter(slicesData);
                     fetchSliceImages(slicesData);
