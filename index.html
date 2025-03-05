@@ -35,6 +35,13 @@
             text-decoration: none;
         }
 
+        .matches-container {
+            display: none; /* Initially hidden */
+            justify-content: center;
+            align-items: center;
+            margin: 10px;
+        }
+
         nav a.dark-mode {
             color: #a0aec0;
         }
@@ -49,6 +56,14 @@
         }
 
         .dark-mode-toggle {}
+
+        /* Force dark mode on the iframe background */
+        @media (prefers-color-scheme: dark) {
+            iframe {
+                background-color: #2e2e2e;
+                color: #fff;
+            }
+        }
     </style>
 </head>
 
@@ -66,10 +81,18 @@
             <label for="darkModeToggle">Dark Mode</label>
             <input type="checkbox" id="darkModeToggle" checked>
         </div>
+        <div class="container mx-auto p-4">
+            <button id="toggleMatches" class="p-2 bg-blue-500 text-white rounded">Show Matches (Light Mode Warning)</button>
+        </div>
     </div>
-    <div class="logo">
+    <!-- <div class="logo">
         <img src="logo.png" alt="Logo">
-    </div>
+    </div> -->
+
+    <div class="matches-container" id="matchesContainer">
+        <iframe title="Matches"
+            src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSxzxqvEZYgsl61r87d3doBCdOqileLtBjebQ8YfCtzg-vf7PaOd34dMqimRmiykH9BVgIqDdoGu6-I/pubhtml?gid=1085291569&amp;single=true&amp;widget=true&amp;headers=false"
+            style="width: 100%; height: calc(100vh - 100px); border: none;"></iframe>
     </div>
     <script>
         const darkModeToggle = document.getElementById('darkModeToggle');
@@ -89,6 +112,19 @@
                 element.classList.add('dark-mode');
             });
         }
+
+        // Toggle matches container visibility
+        const toggleMatchesButton = document.getElementById('toggleMatches');
+        const matchesContainer = document.getElementById('matchesContainer');
+        toggleMatchesButton.addEventListener('click', function () {
+            if (matchesContainer.style.display === 'none' || matchesContainer.style.display === '') {
+                matchesContainer.style.display = 'flex';
+                toggleMatchesButton.textContent = 'Hide Matches';
+            } else {
+                matchesContainer.style.display = 'none';
+                toggleMatchesButton.textContent = 'Show Matches (Light Mode Warning)';
+            }
+        });
     </script>
 </body>
 
