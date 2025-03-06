@@ -163,6 +163,11 @@
         <p class="text-center text-sm text-gray-400">* Click/Tap on a card to view its image</p>
         <p class="text-center text-sm text-gray-400">* Click/Tap on column header to sort</p>
         <div class="filters grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+            <input list="emperorSelect" id="emperorSelectInput" placeholder="Search by Emperor"
+                class="p-2 border rounded">
+            <datalist id="emperorSelect">
+                <option value="">Select Emperor</option>
+            </datalist>
             <input type="text" id="nameSearch" placeholder="Search by Name" class="p-2 border rounded">
             <input type="text" id="effectSearch" placeholder="Search by Effect" class="p-2 border rounded">
             <input list="typeFilter" id="typeFilterInput" placeholder="Search by Type" class="p-2 border rounded">
@@ -179,9 +184,11 @@
                 class="p-2 border rounded">
             <datalist id="mechSupportFilter"></datalist>
             <input type="text" id="levelSearch" placeholder="Search by Level/Rank/Link" class="p-2 border rounded">
-            <input list="matrSearch" id="matrSearchInput" placeholder="Search by Monster Attribute" class="p-2 border rounded">
+            <input list="matrSearch" id="matrSearchInput" placeholder="Search by Monster Attribute"
+                class="p-2 border rounded">
             <datalist id="matrSearch"></datalist>
-            <input list="mtypeSearch" id="mtypeSearchInput" placeholder="Search by Monster Type" class="p-2 border rounded">
+            <input list="mtypeSearch" id="mtypeSearchInput" placeholder="Search by Monster Type"
+                class="p-2 border rounded">
             <datalist id="mtypeSearch"></datalist>
             <input type="text" id="scaleSearch" placeholder="Search by Scale" class="p-2 border rounded">
             <input type="text" id="atkSearch" placeholder="Search by ATK" class="p-2 border rounded">
@@ -238,7 +245,7 @@
     </div>
     </div>
 
-    <!-- The Modal -->
+    <!-- The Modal for Card Images -->
     <div id="myModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -271,7 +278,6 @@
             fetch('https://script.google.com/macros/s/AKfycby0rtjSaISnTxZ3BnUH6Pr3Lxfklzte6UTL8mJR2GPiLnS3v2WCNiRumnJsUF_wDCt4qA/exec?sheetName=Card List')
                 .then(response => response.json())
                 .then(data => {
-                    // Process the data to disregard the first 4 empty columns and combine support columns
                     cardData = data.slice(1).map(row => ({
                         NAME: row[0],
                         STATUS: row[1],
@@ -288,6 +294,7 @@
                         STATS: generateStats(row[6], row[4], row[5], row[7], row[8], row[9])
                     }));
                     populateFilters();
+                    populateEmperorSelect();
                     displayCards();
                     loadingOverlay.style.display = 'none';
                 });
@@ -320,6 +327,8 @@
             document.getElementById('scaleSearch').addEventListener('input', applyFilters);
             document.getElementById('atkSearch').addEventListener('input', applyFilters);
             document.getElementById('defSearch').addEventListener('input', applyFilters);
+            document.getElementById('emperorSelectInput').addEventListener('input', applyFilters);
+
 
             resetFiltersButton.addEventListener('click', function () {
                 confirmationModal.style.display = 'block';
@@ -339,6 +348,7 @@
                 document.getElementById('scaleSearch').value = '';
                 document.getElementById('atkSearch').value = '';
                 document.getElementById('defSearch').value = '';
+                document.getElementById('emperorSelectInput').value = '';
                 applyFilters();
                 confirmationModal.style.display = 'none';
             });
@@ -391,6 +401,17 @@
                 });
             });
         });
+
+        function populateEmperorSelect() {
+            const emperorSelect = document.getElementById('emperorSelect');
+            emperorSelect.innerHTML = ''; // Clear existing options
+            const uniqueEmperors = [...new Set(cardData.filter(card => card.TYPE && card.TYPE.includes('Monster')).map(card => card.NAME))];
+            uniqueEmperors.forEach(emperor => {
+                const option = document.createElement('option');
+                option.value = emperor;
+                emperorSelect.appendChild(option);
+            });
+        }
 
         // Function to generate the Stats field
         function generateStats(level, mattribute, mtype, scale, atk, def) {
@@ -451,17 +472,17 @@
                         filter.appendChild(option);
                     });
                 }
-                
+
             });
         }
 
+        // Update the applyFilters function to get the selected Emperor's attributes
         function applyFilters() {
-            // Log that the function have been called
-            console.log('applyFilters() called');
             currentPage = 1; // Reset to the first page when filters are applied
             displayCards();
         }
 
+        // Update the displayCards function to use the selected Emperor's attributes
         function displayCards() {
             const nameSearch = document.getElementById('nameSearch').value.toLowerCase();
             const effectSearch = document.getElementById('effectSearch').value.toLowerCase();
@@ -476,6 +497,8 @@
             const scaleSearch = document.getElementById('scaleSearch').value.toLowerCase();
             const atkSearch = document.getElementById('atkSearch').value.toLowerCase();
             const defSearch = document.getElementById('defSearch').value.toLowerCase();
+            const emperorName = document.getElementById('emperorSelectInput').value;
+            const emperor = cardData.find(card => card.NAME.toLowerCase() === emperorName.toLowerCase());
 
             const tableBody = document.querySelector('#cardTable tbody');
             tableBody.innerHTML = '';
@@ -486,8 +509,19 @@
                 const hasMechSupportFilter = mechSupportFilter !== '';
 
                 const supportFilterActive = hasAttSupportFilter || hasTypeSupportFilter || hasMechSupportFilter;
+                // Ex: "Crusadia , Mekk-Knight"
+                const emperorSlices = emperor ? emperor.SLICE.split(',').map(slice => slice.trim().toLowerCase()) : [];
+ 
+                var supportsEmperor = emperor ? (
+                    row.SUPPORT.toLowerCase().includes(emperor.MATTRIBUTE.toLowerCase()) ||
+                    row.SUPPORT.toLowerCase().includes(emperor.MTYPE.toLowerCase()) ||
+                    row.SUPPORT.toLowerCase().includes(emperor.TYPE.split(' ')[0].toLowerCase()) ||
+                    emperorSlices.some(slice => row.SLICE.toLowerCase().includes(slice))
+                ) : true;
+
 
                 return (
+                    supportsEmperor &&
                     (nameSearch === '' || row.NAME.toLowerCase().includes(nameSearch)) &&
                     (effectSearch === '' || row.EFFECT.toLowerCase().includes(effectSearch)) &&
                     (sliceFilter === '' || row.SLICE.toLowerCase().includes(sliceFilter) || (sliceFilter === 'N/A' && !row.SLICE)) &&
