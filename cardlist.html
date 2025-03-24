@@ -374,7 +374,8 @@
 
             prevPageButtons.forEach(button => {
                 button.addEventListener('click', function () {
-                    const maxPage = Math.ceil(cardData.length / cardsPerPage);
+                    const filteredData = getFilteredData();
+                    const maxPage = Math.ceil(filteredData.length / cardsPerPage);
                     if (currentPage > 1) {
                         currentPage--;
                     } else {
@@ -387,7 +388,8 @@
 
             nextPageButtons.forEach(button => {
                 button.addEventListener('click', function () {
-                    const maxPage = Math.ceil(cardData.length / cardsPerPage);
+                    const filteredData = getFilteredData();
+                    const maxPage = Math.ceil(filteredData.length / cardsPerPage);
                     if (currentPage < maxPage) {
                         currentPage++;
                     } else {
@@ -664,6 +666,60 @@
                     document.querySelectorAll('tr.clicked').forEach(tr => tr.classList.remove('clicked'));
                 }
             }
+        }
+
+        function getFilteredData() {
+            const nameSearch = document.getElementById('nameSearch').value.toLowerCase();
+            const effectSearch = document.getElementById('effectSearch').value.toLowerCase();
+            const sliceFilter = document.getElementById('sliceFilterInput').value.toLowerCase();
+            const attSupportFilter = document.getElementById('attSupportFilterInput').value.toLowerCase();
+            const typeSupportFilter = document.getElementById('typeSupportFilterInput').value.toLowerCase();
+            const mechSupportFilter = document.getElementById('mechSupportFilterInput').value.toLowerCase();
+            const typeFilter = document.getElementById('typeFilterInput').value.toLowerCase();
+            const levelSearch = document.getElementById('levelSearch').value.toLowerCase();
+            const matrSearch = document.getElementById('matrSearchInput').value.toLowerCase();
+            const mtypeSearch = document.getElementById('mtypeSearchInput').value.toLowerCase();
+            const scaleSearch = document.getElementById('scaleSearch').value.toLowerCase();
+            const atkSearch = document.getElementById('atkSearch').value.toLowerCase();
+            const defSearch = document.getElementById('defSearch').value.toLowerCase();
+            const emperorName = document.getElementById('emperorSelectInput').value;
+            const emperor = cardData.find(card => card.NAME.toLowerCase() === emperorName.toLowerCase());
+
+            return cardData.filter(row => {
+                const hasAttSupportFilter = attSupportFilter !== '';
+                const hasTypeSupportFilter = typeSupportFilter !== '';
+                const hasMechSupportFilter = mechSupportFilter !== '';
+
+                const supportFilterActive = hasAttSupportFilter || hasTypeSupportFilter || hasMechSupportFilter;
+                const emperorSlices = emperor ? emperor.SLICE.split(',').map(slice => slice.trim().toLowerCase()) : [];
+
+                const supportsEmperor = emperor ? (
+                    row.SUPPORT.toLowerCase().includes(emperor.MATTRIBUTE.toLowerCase()) ||
+                    row.SUPPORT.toLowerCase().includes(emperor.MTYPE.toLowerCase()) ||
+                    row.SUPPORT.toLowerCase().includes(emperor.TYPE.split(' ')[0].toLowerCase()) ||
+                    emperorSlices.some(slice => row.SLICE.toLowerCase().includes(slice))
+                ) : true;
+
+                return (
+                    supportsEmperor &&
+                    (nameSearch === '' || row.NAME.toLowerCase().includes(nameSearch)) &&
+                    (effectSearch === '' || row.EFFECT.toLowerCase().includes(effectSearch)) &&
+                    (sliceFilter === '' || row.SLICE.toLowerCase().includes(sliceFilter) || (sliceFilter === 'N/A' && !row.SLICE)) &&
+                    (typeFilter === '' || row.TYPE && row.TYPE.toLowerCase().includes(typeFilter)) &&
+                    (levelSearch === '' || row.STATS.toLowerCase().includes('level/rank/link ' + levelSearch)) &&
+                    (matrSearch === '' || row.STATS.toLowerCase().includes(matrSearch)) &&
+                    (mtypeSearch === '' || row.STATS.toLowerCase().includes(mtypeSearch)) &&
+                    (scaleSearch === '' || row.STATS.toLowerCase().includes('scale: ' + scaleSearch)) &&
+                    (atkSearch === '' || row.STATS.toLowerCase().includes('atk/ ' + atkSearch)) &&
+                    (defSearch === '' || row.STATS.toLowerCase().includes('def/ ' + defSearch)) &&
+                    (
+                        !supportFilterActive ||
+                        (hasAttSupportFilter && row.SUPPORT.toLowerCase().includes(attSupportFilter)) ||
+                        (hasTypeSupportFilter && row.SUPPORT.toLowerCase().includes(typeSupportFilter)) ||
+                        (hasMechSupportFilter && row.SUPPORT.toLowerCase().includes(mechSupportFilter))
+                    )
+                );
+            });
         }
     </script>
 </body>
