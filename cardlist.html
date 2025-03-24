@@ -7,6 +7,7 @@
     <title>Pure Duel Series Card List</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="dark-mode.js"></script>
     <style>
         body.dark-mode {
             background-color: #1a202c;
@@ -299,18 +300,6 @@
                     loadingOverlay.style.display = 'none';
                 });
 
-            document.body.classList.toggle('dark-mode');
-            document.querySelectorAll('table, th, td, tr, .modal-content, .close, .filters input').forEach(element => {
-                element.classList.toggle('dark-mode');
-            });
-
-            const darkModeToggle = document.getElementById('darkModeToggle');
-            darkModeToggle.addEventListener('change', function () {
-                document.body.classList.toggle('dark-mode');
-                document.querySelectorAll('table, th, td, tr, .modal-content, .close, .filters input').forEach(element => {
-                    element.classList.toggle('dark-mode');
-                });
-            });
 
             const resetFiltersButton = document.getElementById('resetFilters');
             const confirmationModal = document.getElementById('confirmationModal');
@@ -385,19 +374,27 @@
 
             prevPageButtons.forEach(button => {
                 button.addEventListener('click', function () {
+                    const maxPage = Math.ceil(cardData.length / cardsPerPage);
                     if (currentPage > 1) {
                         currentPage--;
-                        displayCards();
+                    } else {
+                        // Loop back to the last page
+                        currentPage = maxPage;
                     }
+                    displayCards();
                 });
             });
 
             nextPageButtons.forEach(button => {
                 button.addEventListener('click', function () {
-                    if (currentPage * cardsPerPage < cardData.length) {
+                    const maxPage = Math.ceil(cardData.length / cardsPerPage);
+                    if (currentPage < maxPage) {
                         currentPage++;
-                        displayCards();
+                    } else {
+                        // Loop back to the first page
+                        currentPage = 1;
                     }
+                    displayCards();
                 });
             });
         });
@@ -511,7 +508,7 @@
                 const supportFilterActive = hasAttSupportFilter || hasTypeSupportFilter || hasMechSupportFilter;
                 // Ex: "Crusadia , Mekk-Knight"
                 const emperorSlices = emperor ? emperor.SLICE.split(',').map(slice => slice.trim().toLowerCase()) : [];
- 
+
                 var supportsEmperor = emperor ? (
                     row.SUPPORT.toLowerCase().includes(emperor.MATTRIBUTE.toLowerCase()) ||
                     row.SUPPORT.toLowerCase().includes(emperor.MTYPE.toLowerCase()) ||
